@@ -54,4 +54,74 @@ public class AVLTrees{
       return search(node.right,value);
     }
   }
+
+  public int getHeight(BinaryNode node){
+    if (node==null) return 0;
+    return node.height;
+  }
+
+  private BinaryNode rotateLeft(BinaryNode disBalance){
+    BinaryNode newRoot=disBalance.right;
+    disBalance.right= disBalance.right.left;
+    newRoot.left=disBalance;
+    disBalance.height=1+Math.max(getHeight(disBalance.left),getHeight(disBalance.right));
+    newRoot.height=1+Math.max(getHeight(newRoot.left),getHeight(newRoot.right));
+    return newRoot;
+  }
+
+  private BinaryNode rotateRight(BinaryNode disBalance){
+    BinaryNode newRoot = disBalance.left;
+    disBalance.left= disBalance.left.right;
+    newRoot.right=disBalance;
+    disBalance.height=1+Math.max(getHeight(disBalance.left),getHeight(disBalance.right));
+    newRoot.height=1+Math.max(getHeight(newRoot.left),getHeight(newRoot.right));
+    return newRoot;
+  }
+
+  public int getBalance(BinaryNode node){
+    if(node==null) return 0;
+    return getHeight(node.left)-getHeight(node.right);
+  }
+
+  //insertNode
+  private BinaryNode insertNode(BinaryNode node,int value){
+    if(node ==null){
+      BinaryNode newNode=new BinaryNode();
+      newNode.value=value;
+      newNode.height=1;
+      return newNode;
+    }else if(value < node.value){
+      node.left=insertNode(node.left,value);
+    }else{
+      node.right=insertNode(node.right,value);
+    }
+    node.height=1+Math.max(getHeight(node.left),getHeight(node.right));
+    int balance=getBalance(node);
+
+    //left-left comdition
+    if(balance>1 && value<node.left.value){
+      return rotateRight(node);
+    }
+    //left-right condition
+    if(balance>1 && value>node.left.value){
+      node.left=rotateLeft(node);
+      return rotateRight(node);
+    }
+
+    //rigth-rigth condtion
+    if(balance>1 && value>node.right.value){
+      return rotateLeft(node);
+    }
+    //left-right condition
+    if(balance>1 && value<node.right.value){
+      node.left=rotateRight(node);
+      return rotateLeft(node);
+    }
+
+    return node;
+  }
+
+  public void insert(int value){
+    root=insertNode(root,value);
+  }
 }
