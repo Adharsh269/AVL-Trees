@@ -179,4 +179,9 @@ public class AVLTrees{
   public void delete(int value){
     root=deleteNode(root, value);
   }
+
+  public void deleteAVL(){
+    root=null;
+    System.out.println("AVL tree is deleted");
+  }
 }
